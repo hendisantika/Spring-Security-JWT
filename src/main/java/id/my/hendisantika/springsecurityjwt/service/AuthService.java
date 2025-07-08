@@ -1,6 +1,13 @@
 package id.my.hendisantika.springsecurityjwt.service;
 
+import id.my.hendisantika.springsecurityjwt.dto.RegisterRequest;
+import id.my.hendisantika.springsecurityjwt.model.User;
+import id.my.hendisantika.springsecurityjwt.repository.UserRepository;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 /**
@@ -23,4 +30,24 @@ public class AuthService {
     private final AuthenticationManager authenticationManager;
     private final JwtService jwtService;
     private final UserDetailsService userDetailsService;
+
+    @Transactional
+    public void registerUser(RegisterRequest registerRequest) {
+        // Check if user with the same username already exist
+        if (userRepository.existsByUsername(registerRequest.getUsername())) {
+            throw new IllegalArgumentException("Username is already in use");
+        }
+
+        // Create new user
+        User user = User
+                .builder()
+                .fullName(registerRequest.getFullName())
+                .username(registerRequest.getUsername())
+                .password(passwordEncoder.encode(registerRequest.getPassword()))
+                .role(registerRequest.getRole())
+                .build();
+
+        userRepository.save(user);
+    }
+
 }
