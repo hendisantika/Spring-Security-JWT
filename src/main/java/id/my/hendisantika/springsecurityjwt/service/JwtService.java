@@ -93,4 +93,13 @@ public class JwtService {
         }
         return null;
     }
+
+    // Validate if the token is refresh token
+    public boolean isRefreshToken(String token) {
+        Claims claims = extractAllClaims(token);
+        if (claims == null) {
+            return false;
+        }
+        return "refresh".equals(claims.get("tokenType"));
+    }
 }
