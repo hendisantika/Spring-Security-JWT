@@ -73,4 +73,10 @@ public class JwtService {
                 .compact();
     }
 
+    // Validate token
+    public boolean validateTokenForUser(String token, UserDetails userDetails) {
+        final String username = extractUsernameFromToken(token);
+        return username != null
+                && username.equals(userDetails.getUsername());
+    }
 }
