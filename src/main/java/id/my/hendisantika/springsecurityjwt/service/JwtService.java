@@ -1,7 +1,9 @@
 package id.my.hendisantika.springsecurityjwt.service;
 
+import id.my.hendisantika.springsecurityjwt.dto.TokenPair;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 /**
@@ -28,4 +30,10 @@ public class JwtService {
     @Value("${app.jwt.refresh-expiration}")
     private long refreshExpirationMs;
 
+    public TokenPair generateTokenPair(Authentication authentication) {
+        String accessToken = generateAccessToken(authentication);
+        String refreshToken = generateRefreshToken(authentication);
+
+        return new TokenPair(accessToken, refreshToken);
+    }
 }
