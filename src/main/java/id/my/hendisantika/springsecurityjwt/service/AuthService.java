@@ -1,11 +1,16 @@
 package id.my.hendisantika.springsecurityjwt.service;
 
+import id.my.hendisantika.springsecurityjwt.dto.LoginRequest;
 import id.my.hendisantika.springsecurityjwt.dto.RegisterRequest;
+import id.my.hendisantika.springsecurityjwt.dto.TokenPair;
 import id.my.hendisantika.springsecurityjwt.model.User;
 import id.my.hendisantika.springsecurityjwt.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -50,4 +55,19 @@ public class AuthService {
         userRepository.save(user);
     }
 
+    public TokenPair login(LoginRequest loginRequest) {
+        // Authenticate the user
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        loginRequest.getUsername(),
+                        loginRequest.getPassword()
+                )
+        );
+
+        // Set authentication in security context
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+
+        // Generate Token Pair
+        return jwtService.generateTokenPair(authentication);
+    }
 }
