@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
+
 /**
  * Created by IntelliJ IDEA.
  * Project : Spring-Security-JWT
@@ -35,5 +37,10 @@ public class JwtService {
         String refreshToken = generateRefreshToken(authentication);
 
         return new TokenPair(accessToken, refreshToken);
+    }
+
+    // Generate access token
+    public String generateAccessToken(Authentication authentication) {
+        return generateToken(authentication, jwtExpirationMs, new HashMap<>());
     }
 }
