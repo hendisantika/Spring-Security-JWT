@@ -1,6 +1,7 @@
 package id.my.hendisantika.springsecurityjwt.controller;
 
 import id.my.hendisantika.springsecurityjwt.dto.LoginRequest;
+import id.my.hendisantika.springsecurityjwt.dto.RefreshTokenRequest;
 import id.my.hendisantika.springsecurityjwt.dto.RegisterRequest;
 import id.my.hendisantika.springsecurityjwt.dto.TokenPair;
 import id.my.hendisantika.springsecurityjwt.service.AuthService;
@@ -40,6 +41,12 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<?> login(@Valid @RequestBody LoginRequest loginRequest) {
         TokenPair tokenPair = authService.login(loginRequest);
+        return ResponseEntity.ok(tokenPair);
+    }
+
+    @PostMapping("/refresh-token")
+    public ResponseEntity<?> refreshToken(@Valid @RequestBody RefreshTokenRequest request) {
+        TokenPair tokenPair = authService.refreshToken(request);
         return ResponseEntity.ok(tokenPair);
     }
 }
