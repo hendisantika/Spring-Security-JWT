@@ -1,8 +1,11 @@
 package id.my.hendisantika.springsecurityjwt.service;
 
+import id.my.hendisantika.springsecurityjwt.model.Product;
 import id.my.hendisantika.springsecurityjwt.repository.ProductRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.
@@ -20,4 +23,8 @@ import org.springframework.stereotype.Service;
 public class ProductService {
     private final ProductRepository productRepository;
 
+    // Get all the product
+    public List<Product> getAllProducts() {
+        return productRepository.findAll();
+    }
 }
