@@ -1,16 +1,19 @@
 package id.my.hendisantika.springsecurityjwt.service;
 
 import id.my.hendisantika.springsecurityjwt.dto.LoginRequest;
+import id.my.hendisantika.springsecurityjwt.dto.RefreshTokenRequest;
 import id.my.hendisantika.springsecurityjwt.dto.RegisterRequest;
 import id.my.hendisantika.springsecurityjwt.dto.TokenPair;
 import id.my.hendisantika.springsecurityjwt.model.User;
 import id.my.hendisantika.springsecurityjwt.repository.UserRepository;
 import jakarta.transaction.Transactional;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -69,5 +72,31 @@ public class AuthService {
 
         // Generate Token Pair
         return jwtService.generateTokenPair(authentication);
+    }
+
+    public TokenPair refreshToken(@Valid RefreshTokenRequest request) {
+
+        String refreshToken = request.getRefreshToken();
+        // check if it is valid refresh token
+        if (!jwtService.isRefreshToken(refreshToken)) {
+            throw new IllegalArgumentException("Invalid refresh token");
+        }
+
+        String user = jwtService.extractUsernameFromToken(refreshToken);
+        UserDetails userDetails = userDetailsService.loadUserByUsername(user);
+
+        if (userDetails == null) {
+            throw new IllegalArgumentException("User not found");
+        }
+
+        UsernamePasswordAuthenticationToken authentication =
+                new UsernamePasswordAuthenticationToken(
+                        userDetails,
+                        null,
+                        userDetails.getAuthorities()
+                );
+
+        String accessToken = jwtService.generateAccessToken(authentication);
+        return new TokenPair(accessToken, refreshToken);
     }
 }
