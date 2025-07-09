@@ -102,4 +102,20 @@ public class JwtService {
         }
         return "refresh".equals(claims.get("tokenType"));
     }
+
+    private Claims extractAllClaims(String token) {
+        Claims claims = null;
+
+        try {
+            claims = Jwts.parser()
+                    .verifyWith(getSignInKey())
+                    .build()
+                    .parseSignedClaims(token)
+                    .getPayload();
+        } catch (JwtException | IllegalArgumentException e) {
+            throw new RuntimeException(e);
+        }
+
+        return claims;
+    }
 }
