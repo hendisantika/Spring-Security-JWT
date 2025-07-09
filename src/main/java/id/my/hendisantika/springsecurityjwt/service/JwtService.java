@@ -1,6 +1,7 @@
 package id.my.hendisantika.springsecurityjwt.service;
 
 import id.my.hendisantika.springsecurityjwt.dto.TokenPair;
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -82,5 +83,14 @@ public class JwtService {
 
     public boolean isValidToken(String token) {
         return extractAllClaims(token) != null;
+    }
+
+    public String extractUsernameFromToken(String token) {
+        Claims claims = extractAllClaims(token);
+
+        if (claims != null) {
+            return claims.getSubject();
+        }
+        return null;
     }
 }
