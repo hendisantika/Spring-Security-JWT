@@ -1,11 +1,14 @@
 package id.my.hendisantika.springsecurityjwt.service;
 
 import id.my.hendisantika.springsecurityjwt.dto.TokenPair;
+import io.jsonwebtoken.Jwts;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -51,4 +54,23 @@ public class JwtService {
         claims.put("tokenType", "refresh");
         return generateToken(authentication, refreshExpirationMs, claims);
     }
+
+    private String generateToken(Authentication authentication, long expirationInMs, Map<String, String> claims) {
+        UserDetails userPrincipal = (UserDetails) authentication.getPrincipal();
+
+        Date now = new Date(); // Time of token creation
+        Date expiryDate = new Date(now.getTime() + expirationInMs); // Time of token expiration
+
+        return Jwts.builder()
+                .header()
+                .add("typ", "JWT")
+                .and()
+                .subject(userPrincipal.getUsername())
+                .claims(claims)
+                .issuedAt(now)
+                .expiration(expiryDate)
+                .signWith(getSignInKey())
+                .compact();
+    }
+
 }
