@@ -79,4 +79,8 @@ public class JwtService {
         return username != null
                 && username.equals(userDetails.getUsername());
     }
+
+    public boolean isValidToken(String token) {
+        return extractAllClaims(token) != null;
+    }
 }
