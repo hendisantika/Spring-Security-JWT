@@ -7,6 +7,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by IntelliJ IDEA.
@@ -42,5 +43,12 @@ public class JwtService {
     // Generate access token
     public String generateAccessToken(Authentication authentication) {
         return generateToken(authentication, jwtExpirationMs, new HashMap<>());
+    }
+
+    // Generate refresh token
+    public String generateRefreshToken(Authentication authentication) {
+        Map<String, String> claims = new HashMap<>();
+        claims.put("tokenType", "refresh");
+        return generateToken(authentication, refreshExpirationMs, claims);
     }
 }
