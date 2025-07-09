@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Created by IntelliJ IDEA.
@@ -26,5 +27,10 @@ public class ProductService {
     // Get all the product
     public List<Product> getAllProducts() {
         return productRepository.findAll();
+    }
+
+    // Get product by id
+    public Optional<Product> getProductById(Long id) {
+        return productRepository.findById(id);
     }
 }
