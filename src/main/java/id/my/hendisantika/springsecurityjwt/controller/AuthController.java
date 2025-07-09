@@ -1,6 +1,8 @@
 package id.my.hendisantika.springsecurityjwt.controller;
 
+import id.my.hendisantika.springsecurityjwt.dto.LoginRequest;
 import id.my.hendisantika.springsecurityjwt.dto.RegisterRequest;
+import id.my.hendisantika.springsecurityjwt.dto.TokenPair;
 import id.my.hendisantika.springsecurityjwt.service.AuthService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -33,5 +35,11 @@ public class AuthController {
         // Save the new user to the database and return success response.
         authService.registerUser(request);
         return ResponseEntity.ok("User registered successfully");
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@Valid @RequestBody LoginRequest loginRequest) {
+        TokenPair tokenPair = authService.login(loginRequest);
+        return ResponseEntity.ok(tokenPair);
     }
 }
