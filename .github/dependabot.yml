@@ -1,16 +1,65 @@
 version: 2
 updates:
-  - package-ecosystem: gradle
-    directory: "/"
-    schedule:
-      interval: daily
-      time: '05:00'
-      timezone: Asia/Jakarta
-    open-pull-requests-limit: 10
-  - package-ecosystem: "github-actions"
+  # Gradle dependencies (build.gradle)
+  - package-ecosystem: "gradle"
     directory: "/"
     schedule:
       interval: "daily"
-      time: '05:00'
-      timezone: Asia/Jakarta
+      time: "05:00"
+      timezone: "Asia/Jakarta"
     open-pull-requests-limit: 10
+    target-branch: "main"
+    labels:
+      - "dependencies"
+      - "java"
+    commit-message:
+      prefix: "build(deps)"
+      prefix-development: "build(deps-dev)"
+      include: "scope"
+    groups:
+      # Keep the Spring Boot plugin & dependency-management plugin in lockstep
+      spring-boot:
+        patterns:
+          - "org.springframework.boot*"
+          - "io.spring.dependency-management*"
+      jjwt:
+        patterns:
+          - "io.jsonwebtoken:*"
+      testcontainers:
+        patterns:
+          - "org.testcontainers:*"
+      # Everything else: batch minor/patch updates into a single PR
+      gradle-minor-and-patch:
+        update-types:
+          - "minor"
+          - "patch"
+        exclude-patterns:
+          - "org.springframework.boot*"
+          - "io.spring.dependency-management*"
+          - "io.jsonwebtoken:*"
+          - "org.testcontainers:*"
+    ignore:
+      # Major Spring Boot upgrades require manual migration work
+      - dependency-name: "org.springframework.boot"
+        update-types: [ "version-update:semver-major" ]
+
+  # GitHub Actions used in .github/workflows
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "05:00"
+      timezone: "Asia/Jakarta"
+    open-pull-requests-limit: 10
+    labels:
+      - "dependencies"
+      - "github-actions"
+    commit-message:
+      prefix: "ci(deps)"
+      include: "scope"
+    groups:
+      github-actions:
+        patterns:
+          - "*"
+
