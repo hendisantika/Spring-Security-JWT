@@ -1,5 +1,6 @@
 package id.my.hendisantika.springsecurityjwt.dto;
 
+import id.my.hendisantika.springsecurityjwt.model.Role;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
